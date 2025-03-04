@@ -1,0 +1,189 @@
+---
+title: "Class 5: Data Viz with ggplot"
+author: "Jacqueline Cheung(PID:A17085191)"
+date: "1/21/2025"
+format: pdf
+editor: visual
+---
+
+#Intro to ggplot
+
+There are many graphic systems in R(ways to make plots and figures). These include "base" R plots. Today we will focus on the **ggplot2** package.
+
+Let's start with a plot of a simple in-built dataset called `cars`
+
+```{r}
+cars
+
+```
+
+```{r}
+plot(cars)
+```
+
+Let's see how we can make this figure using **ggplot**. First I need to install this package on my computer. To install any R package, I use the function `install.packages()`
+
+> I will run 'install.packages("ggplot2") in my R console not this quarto document!
+
+Before I can use any functions from add on packages I need to load the package from my "library()" with the `library(ggplot2)` call.
+
+```{r}
+#install.packages("ggplot2")
+library(ggplot2)
+ggplot(cars)
+
+```
+
+All ggplot figures have at least 3 things (called layers). These include: - **data** (the input dataset I want to plot from) - **aes** (aesthetic mapping of data to my plot) - **geom**(the geom_point(), geom_line(), etc that I want to draw)
+
+```{r}
+library(ggplot2)
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+Let's add a line to show the relationship here:
+
+```{r}
+
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_bw()+
+  labs(title="My first GGPLOT")
+```
+
+> Q1. Which geometric layer should be used to create scatter plots in ggplot2?
+
+geom_point()
+
+**Part 2**: Adding more plot aesthetics through aes()
+
+The code to read the dataset
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+> Q2. How many genes are in this dataset?
+
+```{r}
+nrow(genes)
+
+```
+5196 genes in the data set
+
+> Q3. Use the colnames() function and the ncol() function on the genes data frame to find out what the column names are (we will need these later) and how many columns there are. How many columns did you find?
+
+```{r}
+colnames(genes)
+ncol(genes)
+```
+4 columns
+
+> Q4. Use the table() function on the State column of this data.frame to find out how many ‘up’ regulated genes there are. What is your answer?
+
+```{r}
+table(genes$State)
+
+```
+
+127 upregulated genes
+
+> Q5. Using your values above and 2 significant figures. What fraction of total genes is up-regulated in this dataset?
+
+```{r}
+round(table(genes$State)/nrow(genes),4)
+```
+
+```{r}
+n.tot <- nrow(genes)
+vals <- table(genes$State)
+
+vals.percent <- vals/n.tot * 100
+round(vals.percent, 2)
+```
+
+2.44% of genes are upregulated
+
+```{r}
+ggplot(genes) +
+  aes(x=Condition1, y=Condition2) +
+  geom_point()
+```
+
+```{r}
+ggplot(genes) +
+  aes(x=Condition1, y=Condition2, col=State) +
+  geom_point()
+```
+
+```{r}
+ggplot(genes) +
+  aes(x=Condition1, y=Condition2, col=State) +
+  geom_point()+
+  theme_bw()+
+  labs(title="Gene Expression changes upon drug treatment", x="Control Expression", y="Drug Pressence Expression")+
+  scale_color_manual(values=c("blue","grey","red"))
+
+```
+
+```{r}
+p <-ggplot(genes) +
+  aes(x=Condition1, y=Condition2, col=State) +
+  geom_point()+
+  theme_bw()+
+  labs(title="Gene Expression changes upon drug treatment", x="Control Expression", y="Drug Pressence Expression")+
+  scale_color_manual(values=c("blue","grey","red"))
+
+p + theme_minimal()
+```
+
+**Part 3**:Combining plots
+
+```{r}
+#install.packages("patchwork")
+library(patchwork)
+
+# Setup some example plots 
+p1 <- ggplot(mtcars) + geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) + geom_boxplot(aes(gear, disp, group = gear))
+p3 <- ggplot(mtcars) + geom_smooth(aes(disp, qsec))
+p4 <- ggplot(mtcars) + geom_bar(aes(carb))
+
+# Use patchwork to combine them here:
+(p1 | p2 | p3) /
+      p4
+```
+```{r}
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+#install.packages("dplyr")
+library(dplyr)
+
+ggplot(gapminder)+
+  geom_point()+
+  aes(x = gdpPercap, y = lifeExp, color=continent, size = pop, alpha=0.5)
+
+```
+
+
+```{r}
+gapminder_2007 <- gapminder %>% filter(year==2007)
+ggplot(gapminder_2007) + 
+  geom_point()+
+  aes(x = gdpPercap, y = lifeExp, color= continent, size = pop, alpha=0.5) + 
+  scale_size_area(max_size = 10)
+```
