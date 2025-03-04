@@ -1,0 +1,167 @@
+---
+title: "Class 10"
+author: "Jacqueline Cheung(A17085191)"
+date: "2/6/2025"
+format: pdf
+editor: visual
+---
+
+## The PDB database
+
+The main repository of biomolecular structure data is called the PDB found at https://www.rcsb.org/ 
+
+Let's see what this database contains. I went to PDB > Analyze > PDB statistics > By Exp method and molecular type
+
+```{r}
+pdbstats <- read.csv("Data Export Summary.csv")
+pdbstats
+```
+> Q1: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy
+
+```{r}
+pdbstats$X.ray
+```
+
+The comma in these number is causing them to be read as character rather than numeric
+
+I can fix this by replacing "," for nothing "" with the `sub()` function
+
+```{r}
+x <- pdbstats$X.ray
+sum( as.numeric(sub(",","",x)))
+```
+
+Or I can use the **readr** package and the `read_csv()`
+
+```{r}
+#install.packages('tidyverse')
+library(readr)
+pdbstats <- read_csv("Data Export Summary.csv")
+pdbstats
+```
+
+I want to clean the column names so that theya re lowercase and don't habve spaces in them.
+
+```{r}
+colnames(pdbstats)
+```
+
+
+```{r}
+#install.packages('janitor')
+library(janitor)
+df <- clean_names(pdbstats)
+df
+```
+
+Total number of X.ray
+
+```{r}
+sum(df$x_ray)
+```
+
+Total number of structures
+```{r}
+sum(df$total)
+```
+
+> Q2: What proportion of structures in the PDB are protein?
+
+
+```{r}
+sum (df$x_ray)/sum(df$total) * 100
+```
+
+Percent of EM structures 
+
+```{r}
+sum(df$em)/sum(df$total) * 100
+```
+
+## 2. Using Mol*
+
+The main Mol* homepage at: https://molstar.org/viewer/. We can input our own PDB files or just give it a PDB database accession code.
+
+![Molecular view of 1HSG](1HSG.png)
+
+> Q4: Water molecules normally have 3 atoms. Why do we see just one atom per water molecule in this structure?
+
+It is in ball and stick mode, which represents the water as a dot.
+
+> Q5: There is a critical “conserved” water molecule in the binding site. Can you identify this water molecule? What residue number does this water molecule have
+
+Water 308
+
+![Ligand Gap in 1HSG](1HSG (1).png)
+
+
+![Water 308 in the binding site](1HSG (2).png)
+
+
+> Q6: Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligand. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water (we recommend “Ball & Stick” for these side-chains). Add this figure to your Quarto document.
+
+![The Important ASP25 amino acids](1HSG (3).png)
+
+## 3. Introduction to Bio3D in R
+
+We canuyse the **bio3d** package for structural bioinformatics to read PDB data into R
+
+```{r}
+library(bio3d)
+
+pdb <- read.pdb("1hsg")
+pdb
+```
+>Q7: How many amino acid residues are there in this pdb object? 
+
+```{r}
+length( pdbseq(pdb))
+```
+
+>Q8: Name one of the two non-protein residues? 
+
+MK1
+
+>Q9: How many protein chains are in this structure? 
+
+2 chains, A and B
+
+Looking at the `pdb` object in more detail
+
+```{r}
+attributes(pdb)
+```
+```{r}
+head(pdb$atom)
+```
+
+Let's try a new function not yet in the bio3d package. It requires the **r3dmol** package that we need to install with`install.packages("r3dnol")`
+
+```{r}
+#install.packages("shiny")
+#install.packages("r3dnol")
+source("https://tinyurl.com/viewpdb")
+#view.pdb(pdb, backgroundColor = "pink")
+```
+
+## 4. predicting fucntional dynamics
+
+We can use the `nma()` function in bio3d to predict the large-scale functional 
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+```
+
+
+```{r}
+m <- nma(adk)
+plot(m)
+```
+Write out a trajectory of the predicted molecular motion:
+
+```{r}
+mktrj(m, file="adk_m7.pdb")
+```
+
+![Molecular overview of ADK](ADK_M7.PDB.png)
