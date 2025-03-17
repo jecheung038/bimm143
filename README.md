@@ -3,133 +3,604 @@ Bioinformatics class
 
 This repo is for my UCSD bioinformatics class. 
 
- # Lab 19
+# Class 5: Data Viz with ggplot
 
-## ∗
+## Jacqueline Cheung(PID:A17085191)
 
-## Cancer Mutation Mini-Project
+## 2025-01-
 
-```
-Ĺ Instructions
-```
-```
-Save this document to your computer and open it in a PDF viewer such as Preview
-(available on every mac) or Adobe Acrobat Reader (free for PC and Linux). Be sure
-to add your name and UC San Diego personal identification number (PID) and email
-below before answering all questions in the space provided.
-```
-```
-Student Name UCSD PID UCSD Email
-```
-## Background:
+#Intro to ggplot
 
-```
-To identify somatic mutations in a tumor, DNA from the tumor is sequenced and compared
-to DNA from normal tissue in the same individual using variant calling algorithms.
-```
-```
-Comparison of tumor sequences to those from normal tissue (rather than ‘the human genome’)
-is important to ensure that the detected differences are not germline mutations.
-```
-To identify which of the somatic mutations leads to the production of aberrant proteins, the
-location of the mutation in the genome is inspected to identify non-synonymous mutations
-(i.e. those that fall into protein coding regions and change the encoded amino acid).
+There are many graphic systems in R(ways to make plots and figures). These include “base”
+R plots. Today we will focus on the **ggplot2** package.
 
-```
-As you go through this mini-project please remember to:
-```
-- Download the PDF version of this lab sheet (as noted above).
-- Type all your answers directly in the space provided below each question.
-- Save and upload your completed PDF togradescope.
+Let’s start with a plot of a simple in-built dataset calledcars
 
-```
-Good luck!
-∗http://thegrantlab.org/teaching/
-```
+cars
 
-## Questions:
-
-```
-Visit the followingwebpageand download your student specific sequences. These sequences
-resulted from an NGS analysis of patient healthy and tumor tissue.
-```
-```
-N.B. Note that these sequence are unique for you and you must download your
-sequences and use them to answer the following questions in the space provided.
-```
-```
-Q1. [1pt] What protein do these sequences correspond to? (Give both full gene/protein name
-and oﬀicial symbol).
-```
-```
-Q2. [6pts] What are the tumor specific mutations in this particular case ( e.g. A130V)?
-```
-```
-Q3. [1pts] Do your mutations cluster to any particular domain and if so give the name and
-PFAM id of this domain? Alternately note whether your protein is single domain and provide
-it’s PFAM id/accession and name (e.g. PF00613 and PI3Ka).
-```
-**Q4.** [2pts] Using theNCI-GDClist the observed top 2 missense mutations in this protein
-(amino acid substitutions)?
+speed dist
+1 4 2
+2 4 10
+3 7 4
+4 7 22
+5 8 16
+6 9 10
+7 10 18
+8 10 26
+9 10 34
+10 11 17
+11 11 28
+12 12 14
+13 12 20
+14 12 24
+15 12 28
+16 13 26
+17 13 34
+18 13 34
+19 13 46
+20 14 26
+21 14 36
 
 
-**Q5.** [2pts] What two TCGA projects have the most cases affected by mutations of this
-gene? (Give the TCGA “code” and “Project Name” for example “TCGA-BRCA” and “Breast
-Invasive Carcinoma”).
+## plot(cars)
 
-**Q6.** [3pts] List one RCSB PDB identifier with 100% identity to the wt_healthy sequence
-and detail the percent coverage of your query sequence for this known structure? Alternately,
-provide the most similar in sequence PDB structure along with it’s percent identity, coverage
-and E-value. Does this structure “cover” (i.e. include or span the amino acid residue positions)
-of your previously identified tumor specific mutations?
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 
-## Optional Extension:
-
-The following 3 questions are not required for this lab session but are here for motivated
-students to see how “druggable hot-spots” near these mutation sites might be identified:
-
-**Q7.** [10pts] UsingAlphaFold notebookgenerate a structural model using the default parame-
-ters for your **mutant** sequence.
 
 ```
-Note that this can take some time depending upon your sequence length. If your
-model is taking many hours to generate or your input sequence yields a “too many
-amino acids” (i.e. length) error you can focus on the main PFAM domain of interest
-(your answer to Q3 above).
+5 10 15 20 25
 ```
-
-Once complete save the resulting PDB format file for your records and useMol-star(or your
-favorite molecular viewer) to render a molecular figure. In this figure please clearly show your
-mutant amino acid **side chains as spacefill** and the protein as **cartoon colored by local
-alpha fold pLDDT quality score**. This score is contained in the B-factor column of your
-PDB downloaded file. **Send this image to Barry for some bonus points**.
-
-**Q8.** [2pts] Considering only your mutations in high quality structure regions (with a pLDDT
-score > 70) are any of the mutations on the surface of the protein and hence have a potential to
-interfere with protein-protein interaction events? List these mutations below (e.g. A130V)
-
-**Q9.** [5pts] Please comment on how useful and/or reliable you think your AlphaFold structural
-model is for your entire sequence and the main domain where your mutations lie? You may
-wish to compare your model to the PDB structure you found in Q6.
-
-**Q10.** [10pts] Visit theFTMap online serverand sign-up for an account. Once logged in
-upload your PDB structure model, provide a job name and submit. Note that that these jobs
-can take some time (over a day) to run if there are multiple runs scheduled ahead of you.
-
-FTMap aims to identify potential **binding hot spots** on the surface of your protein that can
-bind with high aﬀinity to ligands, drugs, or other proteins. The server does this by docking
-
-
-a set of small chemical probes onto the protein surface. The server then clusters the probes
-based on their spatial proximity. Each cluster represents a potential binding site, with larger
-clusters generally indicating stronger or more likely binding sites.
+```
+0
+```
+```
+40
+```
+```
+80
+```
+```
+120
+```
+```
+speed
+```
+```
+dist
+```
+```
+Let’s see how we can make this figure using ggplot. First I need to install this package on my
+computer. To install any R package, I use the functioninstall.packages()
+```
+```
+I will run ’install.packages(“ggplot2”) in my R console not this quarto document!
+```
+Before I can use any functions from add on packages I need to load the package from my
+“library()” with thelibrary(ggplot2)call.
 
 ```
-NB. Note that in advanced options you can also run in PPI Mode with the goal
-of detecting binding hot spots for protein-protein interactions using an alternative
-set of parameters. You might wish to try this as a second calculation.
+#install.packages("ggplot2")
+library(ggplot2)
+ggplot(cars)
 ```
-Are any of the identified “hot spots” near your cancer specific mutation sites or the most
-commonly mutated sites from the NCI-GDC? If so which mutation site(s)?
 
-**- End of Lab -**
+All ggplot figures have at least 3 things (called layers). These include: - **data** (the input dataset
+I want to plot from) - **aes** (aesthetic mapping of data to my plot) - **geom** (the geom_point(),
+geom_line(), etc that I want to draw)
+
+library(ggplot2)
+ggplot(cars) +
+aes(x=speed, y=dist)+
+geom_point()
+
+
+```
+0
+```
+```
+25
+```
+```
+50
+```
+```
+75
+```
+```
+100
+```
+```
+125
+```
+```
+5 10 15 20 25
+speed
+```
+```
+dist
+```
+Let’s add a line to show the relationship here:
+
+ggplot(cars) +
+aes(x=speed, y=dist)+
+geom_point()+
+geom_smooth()
+
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+
+```
+0
+```
+```
+40
+```
+```
+80
+```
+```
+120
+```
+```
+5 10 15 20 25
+speed
+```
+```
+dist
+```
+ggplot(cars) +
+aes(x=speed, y=dist)+
+geom_point()+
+geom_smooth(method="lm")+
+theme_bw()+
+labs(title="My first GGPLOT")
+
+`geom_smooth()` using formula = 'y ~ x'
+
+
+```
+0
+```
+```
+25
+```
+```
+50
+```
+```
+75
+```
+```
+100
+```
+```
+125
+```
+```
+5 10 15 20 25
+speed
+```
+```
+dist
+```
+My first GGPLOT
+
+```
+Q1. Which geometric layer should be used to create scatter plots in ggplot2?
+```
+geom_point()
+
+**Part 2** : Adding more plot aesthetics through aes()
+
+The code to read the dataset
+
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+
+Gene Condition1 Condition2 State
+1 A4GNT -3.6808610 -3.4401355 unchanging
+2 AAAS 4.5479580 4.3864126 unchanging
+3 AASDH 3.7190695 3.4787276 unchanging
+4 AATF 5.0784720 5.0151916 unchanging
+5 AATK 0.4711421 0.5598642 unchanging
+6 AB015752.4 -3.6808610 -3.5921390 unchanging
+
+```
+Q2. How many genes are in this dataset?
+```
+
+nrow(genes)
+
+### [1] 5196
+
+5196 genes in the data set
+
+```
+Q3. Use the colnames() function and the ncol() function on the genes data frame
+to find out what the column names are (we will need these later) and how many
+columns there are. How many columns did you find?
+```
+colnames(genes)
+
+[1] "Gene" "Condition1" "Condition2" "State"
+
+ncol(genes)
+
+### [1] 4
+
+4 columns
+
+```
+Q4. Use the table() function on the State column of this data.frame to find out
+how many ‘up’ regulated genes there are. What is your answer?
+```
+table(genes$State)
+
+```
+down unchanging up
+72 4997 127
+```
+127 upregulated genes
+
+```
+Q5. Using your values above and 2 significant figures. What fraction of total genes
+is up-regulated in this dataset?
+```
+round(table(genes$State)/nrow(genes), 4 )
+
+```
+down unchanging up
+0.0139 0.9617 0.
+```
+
+n.tot <- nrow(genes)
+vals <- table(genes$State)
+
+vals.percent <- vals/n.tot* 100
+round(vals.percent, 2 )
+
+```
+down unchanging up
+1.39 96.17 2.
+```
+2.44% of genes are upregulated
+
+ggplot(genes) +
+aes(x=Condition1, y=Condition2) +
+geom_point()
+
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+0 5 10
+Condition
+```
+```
+Condition
+```
+ggplot(genes) +
+aes(x=Condition1, y=Condition2, col=State) +
+geom_point()
+
+
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+0 5 10
+Condition
+```
+```
+Condition
+```
+```
+State
+down
+unchanging
+up
+```
+ggplot(genes) +
+aes(x=Condition1, y=Condition2, col=State) +
+geom_point()+
+theme_bw()+
+labs(title="Gene Expression changes upon drug treatment",x="Control Expression", y="Drug Pressence Expression")+
+scale_color_manual(values=c("blue","grey","red"))
+
+
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+0 5 10
+Control Expression
+```
+```
+Drug Pressence Expression
+```
+```
+State
+down
+unchanging
+up
+```
+Gene Expression changes upon drug treatment
+
+p <-ggplot(genes) +
+aes(x=Condition1, y=Condition2, col=State) +
+geom_point()+
+theme_bw()+
+labs(title="Gene Expression changes upon drug treatment",x="Control Expression", y="Drug Pressence Expression")+
+scale_color_manual(values=c("blue","grey","red"))
+
+p +theme_minimal()
+
+
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+0 5 10
+Control Expression
+```
+```
+Drug Pressence Expression
+```
+```
+State
+down
+unchanging
+up
+```
+Gene Expression changes upon drug treatment
+
+**Part 3** :Combining plots
+
+#install.packages("patchwork")
+library(patchwork)
+
+# Setup some example plots
+p1 <- ggplot(mtcars) +geom_point(aes(mpg, disp))
+p2 <- ggplot(mtcars) +geom_boxplot(aes(gear, disp,group = gear))
+p3 <- ggplot(mtcars) +geom_smooth(aes(disp, qsec))
+p4 <- ggplot(mtcars) +geom_bar(aes(carb))
+
+# Use patchwork to combine them here:
+(p1 | p2 |p3) /
+p
+
+`geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+
+```
+100
+```
+```
+200
+```
+```
+300
+```
+```
+400
+```
+```
+10 15 20 25 30 35
+mpg
+```
+```
+disp
+```
+```
+100
+```
+```
+200
+```
+```
+300
+```
+```
+400
+```
+```
+2.53.03.54.04.55.05.
+gear
+```
+```
+disp
+```
+```
+16
+```
+```
+17
+```
+```
+18
+```
+```
+19
+```
+```
+20
+```
+```
+100200300400
+disp
+```
+```
+qsec
+```
+```
+0.
+```
+```
+2.
+```
+```
+5.
+```
+```
+7.
+```
+```
+10.
+```
+```
+2 4 6 8
+carb
+```
+```
+count
+```
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+#install.packages("dplyr")
+library(dplyr)
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+```
+filter, lag
+```
+The following objects are masked from 'package:base':
+
+```
+intersect, setdiff, setequal, union
+```
+ggplot(gapminder)+
+geom_point()+
+aes(x = gdpPercap, y = lifeExp,color=continent, size = pop,alpha=0.5)
+
+
+```
+40
+```
+```
+60
+```
+```
+80
+```
+```
+0 30000 60000 90000
+gdpPercap
+```
+```
+lifeExp
+```
+```
+pop
+2.50e+
+5.00e+
+7.50e+
+1.00e+
+1.25e+
+```
+```
+alpha
+0.
+```
+```
+continent
+Africa
+Americas
+Asia
+Europe
+Oceania
+```
+gapminder_2007 <- gapminder%>% filter(year== 2007 )
+ggplot(gapminder_2007)+
+geom_point()+
+aes(x = gdpPercap, y = lifeExp,color= continent, size = pop, alpha=0.5)+
+scale_size_area(max_size = 10 )
+
+
+```
+40
+```
+```
+50
+```
+```
+60
+```
+```
+70
+```
+```
+80
+```
+```
+0 10000 20000 30000 40000 50000
+gdpPercap
+```
+lifeExp
+
+```
+pop
+2.50e+
+5.00e+
+7.50e+
+```
+```
+1.00e+
+```
+```
